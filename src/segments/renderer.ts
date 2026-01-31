@@ -3,7 +3,7 @@ import type { ClaudeHookData } from "../utils/claude";
 import type { PowerlineColors } from "../themes";
 import type { PowerlineConfig } from "../config/loader";
 import type { BlockInfo } from "./block";
-import type { OmcModeInfo, OmcRalphInfo, OmcAgentsInfo, OmcSkillInfo, ActiveAgent } from "./omc";
+import type { StronkAgentsModeInfo, StronkAgentsRalphInfo, StronkAgentsAgentsInfo, StronkAgentsSkillInfo, ActiveAgent } from "./stronk-agents";
 import { formatModelName } from "../utils/formatters";
 
 export interface SegmentConfig {
@@ -64,21 +64,21 @@ export interface TodaySegmentConfig extends SegmentConfig {
 
 export interface VersionSegmentConfig extends SegmentConfig {}
 
-export interface OmcModeSegmentConfig extends SegmentConfig {}
+export interface StronkAgentsModeSegmentConfig extends SegmentConfig {}
 
-export interface OmcRalphSegmentConfig extends SegmentConfig {
+export interface StronkAgentsRalphSegmentConfig extends SegmentConfig {
   warnThreshold?: number;
 }
 
 export type AgentsDisplayFormat = 'count' | 'codes' | 'codes-duration' | 'name' | 'detailed';
 
-export interface OmcAgentsSegmentConfig extends SegmentConfig {
+export interface StronkAgentsAgentsSegmentConfig extends SegmentConfig {
   format?: AgentsDisplayFormat;  // Default: 'count'
   showModelTier?: boolean;       // Show color-coded model tier
   maxDisplay?: number;           // Max agents to show (default: 3)
 }
 
-export interface OmcSkillSegmentConfig extends SegmentConfig {}
+export interface StronkAgentsSkillSegmentConfig extends SegmentConfig {}
 
 export interface BurnRateSegmentConfig extends SegmentConfig {
   compact?: boolean;  // Use compact format (default: true)
@@ -95,10 +95,10 @@ export type AnySegmentConfig =
   | BlockSegmentConfig
   | TodaySegmentConfig
   | VersionSegmentConfig
-  | OmcModeSegmentConfig
-  | OmcRalphSegmentConfig
-  | OmcAgentsSegmentConfig
-  | OmcSkillSegmentConfig
+  | StronkAgentsModeSegmentConfig
+  | StronkAgentsRalphSegmentConfig
+  | StronkAgentsAgentsSegmentConfig
+  | StronkAgentsSkillSegmentConfig
   | BurnRateSegmentConfig;
 
 import {
@@ -149,13 +149,13 @@ export interface PowerlineSymbols {
   metrics_lines_removed: string;
   metrics_burn: string;
   version: string;
-  omc_mode_ultrawork: string;
-  omc_mode_autopilot: string;
-  omc_mode_ecomode: string;
-  omc_mode_inactive: string;
-  omc_ralph: string;
-  omc_agents: string;
-  omc_skill: string;
+  stronk_agents_mode_ultrawork: string;
+  stronk_agents_mode_autopilot: string;
+  stronk_agents_mode_ecomode: string;
+  stronk_agents_mode_inactive: string;
+  stronk_agents_ralph: string;
+  stronk_agents_agents: string;
+  stronk_agents_skill: string;
   bar_filled: string;
   bar_empty: string;
 }
@@ -801,10 +801,10 @@ export class SegmentRenderer {
     };
   }
 
-  renderOmcMode(
-    modeInfo: OmcModeInfo | null,
+  renderStronkAgentsMode(
+    modeInfo: StronkAgentsModeInfo | null,
     colors: PowerlineColors,
-    _config?: OmcModeSegmentConfig
+    _config?: StronkAgentsModeSegmentConfig
   ): SegmentData | null {
     // Hide segment entirely when no mode is active
     if (!modeInfo || !modeInfo.active) {
@@ -814,30 +814,30 @@ export class SegmentRenderer {
     let symbol: string;
     switch (modeInfo.mode) {
       case 'ultrawork':
-        symbol = this.symbols.omc_mode_ultrawork;
+        symbol = this.symbols.stronk_agents_mode_ultrawork;
         break;
       case 'autopilot':
-        symbol = this.symbols.omc_mode_autopilot;
+        symbol = this.symbols.stronk_agents_mode_autopilot;
         break;
       case 'ecomode':
-        symbol = this.symbols.omc_mode_ecomode;
+        symbol = this.symbols.stronk_agents_mode_ecomode;
         break;
       default:
-        symbol = this.symbols.omc_mode_inactive;
+        symbol = this.symbols.stronk_agents_mode_inactive;
     }
 
     // Show icon + mode name (e.g., "⚡ ultrawork")
     return {
       text: `${symbol} ${modeInfo.mode}`,
-      bgColor: colors.omcModeActiveBg,
-      fgColor: colors.omcModeActiveFg,
+      bgColor: colors.stronkAgentsModeActiveBg,
+      fgColor: colors.stronkAgentsModeActiveFg,
     };
   }
 
-  renderOmcRalph(
-    ralphInfo: OmcRalphInfo | null,
+  renderStronkAgentsRalph(
+    ralphInfo: StronkAgentsRalphInfo | null,
     colors: PowerlineColors,
-    config?: OmcRalphSegmentConfig
+    config?: StronkAgentsRalphSegmentConfig
   ): SegmentData | null {
     // Hide segment entirely when ralph is not active
     if (!ralphInfo || !ralphInfo.active) {
@@ -848,33 +848,33 @@ export class SegmentRenderer {
 
     const current = ralphInfo.currentIteration ?? 0;
     const max = ralphInfo.maxIterations ?? 10;
-    const text = `${this.symbols.omc_ralph} ${current}/${max}`;
+    const text = `${this.symbols.stronk_agents_ralph} ${current}/${max}`;
 
     if (current >= max) {
       return {
         text,
-        bgColor: colors.omcRalphMaxBg,
-        fgColor: colors.omcRalphMaxFg,
+        bgColor: colors.stronkAgentsRalphMaxBg,
+        fgColor: colors.stronkAgentsRalphMaxFg,
       };
     } else if (current >= warnThreshold) {
       return {
         text,
-        bgColor: colors.omcRalphWarnBg,
-        fgColor: colors.omcRalphWarnFg,
+        bgColor: colors.stronkAgentsRalphWarnBg,
+        fgColor: colors.stronkAgentsRalphWarnFg,
       };
     }
 
     return {
       text,
-      bgColor: colors.omcRalphActiveBg,
-      fgColor: colors.omcRalphActiveFg,
+      bgColor: colors.stronkAgentsRalphActiveBg,
+      fgColor: colors.stronkAgentsRalphActiveFg,
     };
   }
 
-  renderOmcAgents(
-    agentsInfo: OmcAgentsInfo | null,
+  renderStronkAgentsAgents(
+    agentsInfo: StronkAgentsAgentsInfo | null,
     colors: PowerlineColors,
-    config?: OmcAgentsSegmentConfig
+    config?: StronkAgentsAgentsSegmentConfig
   ): SegmentData | null {
     const count = agentsInfo?.count ?? 0;
     const allAgents = agentsInfo?.agents ?? [];
@@ -952,9 +952,9 @@ export class SegmentRenderer {
     }
 
     return {
-      text: `${this.symbols.omc_agents} ${displayText}`,
-      bgColor: colors.omcAgentsActiveBg,
-      fgColor: colors.omcAgentsActiveFg,
+      text: `${this.symbols.stronk_agents_agents} ${displayText}`,
+      bgColor: colors.stronkAgentsAgentsActiveBg,
+      fgColor: colors.stronkAgentsAgentsActiveFg,
     };
   }
 
@@ -1023,19 +1023,19 @@ export class SegmentRenderer {
     let ansiFg: string | undefined;
     switch (tier) {
       case 'opus':
-        ansiFg = colors.omcAgentOpusFg;
+        ansiFg = colors.stronkAgentsAgentOpusFg;
         break;
       case 'sonnet':
-        ansiFg = colors.omcAgentSonnetFg;
+        ansiFg = colors.stronkAgentsAgentSonnetFg;
         break;
       case 'haiku':
-        ansiFg = colors.omcAgentHaikuFg;
+        ansiFg = colors.stronkAgentsAgentHaikuFg;
         break;
     }
 
     // If ANSI code available, wrap text then restore base segment fg
     if (ansiFg) {
-      return `${ansiFg}${casedCode}${colors.omcAgentsActiveFg}`;
+      return `${ansiFg}${casedCode}${colors.stronkAgentsAgentsActiveFg}`;
     }
 
     // Fallback for non-color terminals: use superscript suffix
@@ -1101,10 +1101,10 @@ export class SegmentRenderer {
     return `${Math.floor(seconds / 60)}m`;
   }
 
-  renderOmcSkill(
-    skillInfo: OmcSkillInfo | null,
+  renderStronkAgentsSkill(
+    skillInfo: StronkAgentsSkillInfo | null,
     colors: PowerlineColors,
-    _config?: OmcSkillSegmentConfig
+    _config?: StronkAgentsSkillSegmentConfig
   ): SegmentData | null {
     // Hide segment entirely when no skill has been activated
     if (!skillInfo || !skillInfo.name) {
@@ -1117,8 +1117,8 @@ export class SegmentRenderer {
 
     return {
       text,
-      bgColor: colors.omcSkillActiveBg,
-      fgColor: colors.omcSkillActiveFg,
+      bgColor: colors.stronkAgentsSkillActiveBg,
+      fgColor: colors.stronkAgentsSkillActiveFg,
     };
   }
 }

@@ -418,25 +418,25 @@ Configure context window limits for different model types. Defaults to 200K toke
 </details>
 
 <details>
-<summary><strong>OMC Mode</strong> - Shows active oh-my-claudecode execution mode</summary>
+<summary><strong>stronk-agents Mode</strong> - Shows active stronk-agents execution mode</summary>
 
 ```json
-"omcMode": {
+"stronkAgentsMode": {
   "enabled": true
 }
 ```
 
-**Display:** Shows the active OMC mode when running (ultrawork, autopilot, ecomode). Hidden when inactive.
+**Display:** Shows the active stronk-agents mode when running (ultrawork, autopilot, ecomode). Hidden when inactive.
 
 **Symbols:** `⚡` ultrawork • `🤖` autopilot • `🌿` ecomode (unicode) • `ULW` `AUTO` `ECO` (text)
 
 </details>
 
 <details>
-<summary><strong>OMC Ralph</strong> - Shows Ralph loop iteration progress</summary>
+<summary><strong>stronk-agents Ralph</strong> - Shows Ralph loop iteration progress</summary>
 
 ```json
-"omcRalph": {
+"stronkAgentsRalph": {
   "enabled": true,
   "warnThreshold": 7
 }
@@ -453,10 +453,10 @@ Configure context window limits for different model types. Defaults to 200K toke
 </details>
 
 <details>
-<summary><strong>OMC Agents</strong> - Shows active background agents with model tier coloring</summary>
+<summary><strong>stronk-agents Agents</strong> - Shows active background agents with model tier coloring</summary>
 
 ```json
-"omcAgents": {
+"stronkAgentsAgents": {
   "enabled": true,
   "format": "codes",
   "showModelTier": true,
@@ -482,10 +482,10 @@ Configure context window limits for different model types. Defaults to 200K toke
 </details>
 
 <details>
-<summary><strong>OMC Skill</strong> - Shows currently active skill name</summary>
+<summary><strong>stronk-agents Skill</strong> - Shows currently active skill name</summary>
 
 ```json
-"omcSkill": {
+"stronkAgentsSkill": {
   "enabled": true
 }
 ```
@@ -662,16 +662,16 @@ In addition to segment colors, themes support these specialized colors:
 - `costWarning`: Color when low ≤ cost < medium threshold (default: yellow tint)
 - `costCritical`: Color when cost ≥ medium threshold (default: red tint)
 
-**OMC Segment Colors**:
+**stronk-agents Segment Colors**:
 ```json
 "colors": {
   "custom": {
-    "omcModeActive": { "bg": "#5a4fcf", "fg": "#ffffff" },
-    "omcRalphActive": { "bg": "#2d7d46", "fg": "#ffffff" },
-    "omcRalphWarn": { "bg": "#b8860b", "fg": "#000000" },
-    "omcRalphMax": { "bg": "#8b0000", "fg": "#ffffff" },
-    "omcAgentsActive": { "bg": "#4a5568", "fg": "#ffffff" },
-    "omcSkillActive": { "bg": "#6b46c1", "fg": "#ffffff" }
+    "stronkAgentsModeActive": { "bg": "#5a4fcf", "fg": "#ffffff" },
+    "stronkAgentsRalphActive": { "bg": "#2d7d46", "fg": "#ffffff" },
+    "stronkAgentsRalphWarn": { "bg": "#b8860b", "fg": "#000000" },
+    "stronkAgentsRalphMax": { "bg": "#8b0000", "fg": "#ffffff" },
+    "stronkAgentsAgentsActive": { "bg": "#4a5568", "fg": "#ffffff" },
+    "stronkAgentsSkillActive": { "bg": "#6b46c1", "fg": "#ffffff" }
   }
 }
 ```
@@ -680,9 +680,9 @@ In addition to segment colors, themes support these specialized colors:
 ```json
 "colors": {
   "custom": {
-    "omcAgentOpus": { "bg": "#9333ea", "fg": "#ffffff" },
-    "omcAgentSonnet": { "bg": "#ca8a04", "fg": "#000000" },
-    "omcAgentHaiku": { "bg": "#16a34a", "fg": "#ffffff" }
+    "stronkAgentsAgentOpus": { "bg": "#9333ea", "fg": "#ffffff" },
+    "stronkAgentsAgentSonnet": { "bg": "#ca8a04", "fg": "#000000" },
+    "stronkAgentsAgentHaiku": { "bg": "#16a34a", "fg": "#ffffff" }
   }
 }
 ```

@@ -29,13 +29,13 @@ import {
   BlockSegmentConfig,
   TodaySegmentConfig,
   VersionSegmentConfig,
-  OmcModeSegmentConfig,
-  OmcRalphSegmentConfig,
-  OmcAgentsSegmentConfig,
-  OmcSkillSegmentConfig,
+  StronkAgentsModeSegmentConfig,
+  StronkAgentsRalphSegmentConfig,
+  StronkAgentsAgentsSegmentConfig,
+  StronkAgentsSkillSegmentConfig,
   BurnRateSegmentConfig,
-  OmcProvider,
-  OmcInfo,
+  StronkAgentsProvider,
+  StronkAgentsInfo,
 } from "./segments";
 import { BlockProvider, BlockInfo } from "./segments/block";
 import { TodayProvider, TodayInfo } from "./segments/today";
@@ -59,7 +59,7 @@ export class PowerlineRenderer {
   private _tmuxService?: TmuxService;
   private _metricsProvider?: MetricsProvider;
   private _segmentRenderer?: SegmentRenderer;
-  private _omcProvider?: OmcProvider;
+  private _stronkAgentsProvider?: StronkAgentsProvider;
 
   constructor(private readonly config: PowerlineConfig) {
     this.symbols = this.initializeSymbols();
@@ -121,11 +121,11 @@ export class PowerlineRenderer {
     return this._segmentRenderer;
   }
 
-  private get omcProvider(): OmcProvider {
-    if (!this._omcProvider) {
-      this._omcProvider = new OmcProvider();
+  private get stronkAgentsProvider(): StronkAgentsProvider {
+    if (!this._stronkAgentsProvider) {
+      this._stronkAgentsProvider = new StronkAgentsProvider();
     }
-    return this._omcProvider;
+    return this._stronkAgentsProvider;
   }
 
   private needsSegmentInfo(segmentType: keyof LineConfig["segments"]): boolean {
@@ -155,15 +155,15 @@ export class PowerlineRenderer {
       ? await this.metricsProvider.getMetricsInfo(hookData.session_id, hookData)
       : null;
 
-    const needsOmcInfo =
-      this.needsSegmentInfo("omcMode") ||
-      this.needsSegmentInfo("omcRalph") ||
-      this.needsSegmentInfo("omcAgents") ||
-      this.needsSegmentInfo("omcSkill");
-    const omcInfo = needsOmcInfo
-      ? await this.omcProvider.getOmcInfo(hookData, {
-          needsSkill: this.needsSegmentInfo("omcSkill"),
-          needsAgents: this.needsSegmentInfo("omcAgents"),
+    const needsStronkAgentsInfo =
+      this.needsSegmentInfo("stronkAgentsMode") ||
+      this.needsSegmentInfo("stronkAgentsRalph") ||
+      this.needsSegmentInfo("stronkAgentsAgents") ||
+      this.needsSegmentInfo("stronkAgentsSkill");
+    const stronkAgentsInfo = needsStronkAgentsInfo
+      ? await this.stronkAgentsProvider.getStronkAgentsInfo(hookData, {
+          needsSkill: this.needsSegmentInfo("stronkAgentsSkill"),
+          needsAgents: this.needsSegmentInfo("stronkAgentsAgents"),
         })
       : null;
 
@@ -175,7 +175,7 @@ export class PowerlineRenderer {
         todayInfo,
         contextInfo,
         metricsInfo,
-        omcInfo
+        stronkAgentsInfo
       );
     }
 
@@ -189,7 +189,7 @@ export class PowerlineRenderer {
           todayInfo,
           contextInfo,
           metricsInfo,
-          omcInfo
+          stronkAgentsInfo
         )
       )
     );
@@ -204,7 +204,7 @@ export class PowerlineRenderer {
     todayInfo: TodayInfo | null,
     contextInfo: ContextInfo | null,
     metricsInfo: MetricsInfo | null,
-    omcInfo: OmcInfo | null
+    stronkAgentsInfo: StronkAgentsInfo | null
   ): Promise<string> {
     const colors = this.getThemeColors();
     const currentDir = hookData.workspace?.current_dir || hookData.cwd || "/";
@@ -229,7 +229,7 @@ export class PowerlineRenderer {
           todayInfo,
           contextInfo,
           metricsInfo,
-          omcInfo,
+          stronkAgentsInfo,
           colors,
           currentDir
         );
@@ -305,8 +305,7 @@ export class PowerlineRenderer {
       const isLast = i === segments.length - 1;
       const nextSegment = !isLast ? segments[i + 1] : null;
       // Codex Fix 1: Use actual rendered bgColor instead of static theme color
-      // This ensures OMC segments with dynamic backgrounds get correct separator colors
-      const nextBgColor = nextSegment ? nextSegment.bgColor : "";
+      // This ensures stronk-agents segments with dynamic backgrounds get correct separator colors
 
       if (isCapsuleStyle && !isFirst) {
         line += " ";
@@ -332,7 +331,7 @@ export class PowerlineRenderer {
     todayInfo: TodayInfo | null,
     contextInfo: ContextInfo | null,
     metricsInfo: MetricsInfo | null,
-    omcInfo: OmcInfo | null
+    stronkAgentsInfo: StronkAgentsInfo | null
   ): Promise<string> {
     const colors = this.getThemeColors();
     const currentDir = hookData.workspace?.current_dir || hookData.cwd || "/";
@@ -354,7 +353,7 @@ export class PowerlineRenderer {
         todayInfo,
         contextInfo,
         metricsInfo,
-        omcInfo,
+        stronkAgentsInfo,
         colors,
         currentDir
       );
@@ -380,7 +379,7 @@ export class PowerlineRenderer {
     todayInfo: TodayInfo | null,
     contextInfo: ContextInfo | null,
     metricsInfo: MetricsInfo | null,
-    omcInfo: OmcInfo | null,
+    stronkAgentsInfo: StronkAgentsInfo | null,
     colors: PowerlineColors,
     currentDir: string
   ) {
@@ -465,35 +464,35 @@ export class PowerlineRenderer {
       );
     }
 
-    if (segment.type === "omcMode") {
-      return this.segmentRenderer.renderOmcMode(
-        omcInfo?.mode ?? null,
+    if (segment.type === "stronkAgentsMode") {
+      return this.segmentRenderer.renderStronkAgentsMode(
+        stronkAgentsInfo?.mode ?? null,
         colors,
-        segment.config as OmcModeSegmentConfig
+        segment.config as StronkAgentsModeSegmentConfig
       );
     }
 
-    if (segment.type === "omcRalph") {
-      return this.segmentRenderer.renderOmcRalph(
-        omcInfo?.ralph ?? null,
+    if (segment.type === "stronkAgentsRalph") {
+      return this.segmentRenderer.renderStronkAgentsRalph(
+        stronkAgentsInfo?.ralph ?? null,
         colors,
-        segment.config as OmcRalphSegmentConfig
+        segment.config as StronkAgentsRalphSegmentConfig
       );
     }
 
-    if (segment.type === "omcAgents") {
-      return this.segmentRenderer.renderOmcAgents(
-        omcInfo?.agents ?? null,
+    if (segment.type === "stronkAgentsAgents") {
+      return this.segmentRenderer.renderStronkAgentsAgents(
+        stronkAgentsInfo?.agents ?? null,
         colors,
-        segment.config as OmcAgentsSegmentConfig
+        segment.config as StronkAgentsAgentsSegmentConfig
       );
     }
 
-    if (segment.type === "omcSkill") {
-      return this.segmentRenderer.renderOmcSkill(
-        omcInfo?.skill ?? null,
+    if (segment.type === "stronkAgentsSkill") {
+      return this.segmentRenderer.renderStronkAgentsSkill(
+        stronkAgentsInfo?.skill ?? null,
         colors,
-        segment.config as OmcSkillSegmentConfig
+        segment.config as StronkAgentsSkillSegmentConfig
       );
     }
 
@@ -639,13 +638,13 @@ export class PowerlineRenderer {
       version: symbolSet.version,
       bar_filled: symbolSet.bar_filled,
       bar_empty: symbolSet.bar_empty,
-      omc_mode_ultrawork: symbolSet.omc_mode_ultrawork,
-      omc_mode_autopilot: symbolSet.omc_mode_autopilot,
-      omc_mode_ecomode: symbolSet.omc_mode_ecomode,
-      omc_mode_inactive: symbolSet.omc_mode_inactive,
-      omc_ralph: symbolSet.omc_ralph,
-      omc_agents: symbolSet.omc_agents,
-      omc_skill: symbolSet.omc_skill,
+      stronk_agents_mode_ultrawork: symbolSet.stronk_agents_mode_ultrawork,
+      stronk_agents_mode_autopilot: symbolSet.stronk_agents_mode_autopilot,
+      stronk_agents_mode_ecomode: symbolSet.stronk_agents_mode_ecomode,
+      stronk_agents_mode_inactive: symbolSet.stronk_agents_mode_inactive,
+      stronk_agents_ralph: symbolSet.stronk_agents_ralph,
+      stronk_agents_agents: symbolSet.stronk_agents_agents,
+      stronk_agents_skill: symbolSet.stronk_agents_skill,
     };
   }
 
@@ -718,16 +717,16 @@ export class PowerlineRenderer {
     const contextCritical = getSegmentColors("contextCritical");
     const metrics = getSegmentColors("metrics");
     const version = getSegmentColors("version");
-    const omcModeActive = getSegmentColors("omcModeActive");
-    const omcModeInactive = getSegmentColors("omcModeInactive");
-    const omcRalphActive = getSegmentColors("omcRalphActive");
-    const omcRalphWarn = getSegmentColors("omcRalphWarn");
-    const omcRalphMax = getSegmentColors("omcRalphMax");
-    const omcRalphInactive = getSegmentColors("omcRalphInactive");
-    const omcAgentsActive = getSegmentColors("omcAgentsActive");
-    const omcAgentsInactive = getSegmentColors("omcAgentsInactive");
-    const omcSkillActive = getSegmentColors("omcSkillActive");
-    const omcSkillInactive = getSegmentColors("omcSkillInactive");
+    const stronkAgentsModeActive = getSegmentColors("stronkAgentsModeActive");
+    const stronkAgentsModeInactive = getSegmentColors("stronkAgentsModeInactive");
+    const stronkAgentsRalphActive = getSegmentColors("stronkAgentsRalphActive");
+    const stronkAgentsRalphWarn = getSegmentColors("stronkAgentsRalphWarn");
+    const stronkAgentsRalphMax = getSegmentColors("stronkAgentsRalphMax");
+    const stronkAgentsRalphInactive = getSegmentColors("stronkAgentsRalphInactive");
+    const stronkAgentsAgentsActive = getSegmentColors("stronkAgentsAgentsActive");
+    const stronkAgentsAgentsInactive = getSegmentColors("stronkAgentsAgentsInactive");
+    const stronkAgentsSkillActive = getSegmentColors("stronkAgentsSkillActive");
+    const stronkAgentsSkillInactive = getSegmentColors("stronkAgentsSkillInactive");
 
     // Model tier colors - optional with graceful fallback
     const getOptionalSegmentColors = (segment: keyof ColorTheme) => {
@@ -754,9 +753,9 @@ export class PowerlineRenderer {
       }
     };
 
-    const omcAgentOpus = getOptionalSegmentColors("omcAgentOpus");
-    const omcAgentSonnet = getOptionalSegmentColors("omcAgentSonnet");
-    const omcAgentHaiku = getOptionalSegmentColors("omcAgentHaiku");
+    const stronkAgentsAgentOpus = getOptionalSegmentColors("stronkAgentsAgentOpus");
+    const stronkAgentsAgentSonnet = getOptionalSegmentColors("stronkAgentsAgentSonnet");
+    const stronkAgentsAgentHaiku = getOptionalSegmentColors("stronkAgentsAgentHaiku");
 
     const costNormal = getOptionalSegmentColors("costNormal");
     const costWarning = getOptionalSegmentColors("costWarning");
@@ -789,38 +788,38 @@ export class PowerlineRenderer {
       metricsFg: metrics.fg,
       versionBg: version.bg,
       versionFg: version.fg,
-      omcModeActiveBg: omcModeActive.bg,
-      omcModeActiveFg: omcModeActive.fg,
-      omcModeInactiveBg: omcModeInactive.bg,
-      omcModeInactiveFg: omcModeInactive.fg,
-      omcRalphActiveBg: omcRalphActive.bg,
-      omcRalphActiveFg: omcRalphActive.fg,
-      omcRalphWarnBg: omcRalphWarn.bg,
-      omcRalphWarnFg: omcRalphWarn.fg,
-      omcRalphMaxBg: omcRalphMax.bg,
-      omcRalphMaxFg: omcRalphMax.fg,
-      omcRalphInactiveBg: omcRalphInactive.bg,
-      omcRalphInactiveFg: omcRalphInactive.fg,
-      omcAgentsActiveBg: omcAgentsActive.bg,
-      omcAgentsActiveFg: omcAgentsActive.fg,
-      omcAgentsInactiveBg: omcAgentsInactive.bg,
-      omcAgentsInactiveFg: omcAgentsInactive.fg,
-      omcSkillActiveBg: omcSkillActive.bg,
-      omcSkillActiveFg: omcSkillActive.fg,
-      omcSkillInactiveBg: omcSkillInactive.bg,
-      omcSkillInactiveFg: omcSkillInactive.fg,
+      stronkAgentsModeActiveBg: stronkAgentsModeActive.bg,
+      stronkAgentsModeActiveFg: stronkAgentsModeActive.fg,
+      stronkAgentsModeInactiveBg: stronkAgentsModeInactive.bg,
+      stronkAgentsModeInactiveFg: stronkAgentsModeInactive.fg,
+      stronkAgentsRalphActiveBg: stronkAgentsRalphActive.bg,
+      stronkAgentsRalphActiveFg: stronkAgentsRalphActive.fg,
+      stronkAgentsRalphWarnBg: stronkAgentsRalphWarn.bg,
+      stronkAgentsRalphWarnFg: stronkAgentsRalphWarn.fg,
+      stronkAgentsRalphMaxBg: stronkAgentsRalphMax.bg,
+      stronkAgentsRalphMaxFg: stronkAgentsRalphMax.fg,
+      stronkAgentsRalphInactiveBg: stronkAgentsRalphInactive.bg,
+      stronkAgentsRalphInactiveFg: stronkAgentsRalphInactive.fg,
+      stronkAgentsAgentsActiveBg: stronkAgentsAgentsActive.bg,
+      stronkAgentsAgentsActiveFg: stronkAgentsAgentsActive.fg,
+      stronkAgentsAgentsInactiveBg: stronkAgentsAgentsInactive.bg,
+      stronkAgentsAgentsInactiveFg: stronkAgentsAgentsInactive.fg,
+      stronkAgentsSkillActiveBg: stronkAgentsSkillActive.bg,
+      stronkAgentsSkillActiveFg: stronkAgentsSkillActive.fg,
+      stronkAgentsSkillInactiveBg: stronkAgentsSkillInactive.bg,
+      stronkAgentsSkillInactiveFg: stronkAgentsSkillInactive.fg,
       // Model tier colors (optional - only present if theme defines them)
-      ...(omcAgentOpus && {
-        omcAgentOpusBg: omcAgentOpus.bg,
-        omcAgentOpusFg: omcAgentOpus.fg,
+      ...(stronkAgentsAgentOpus && {
+        stronkAgentsAgentOpusBg: stronkAgentsAgentOpus.bg,
+        stronkAgentsAgentOpusFg: stronkAgentsAgentOpus.fg,
       }),
-      ...(omcAgentSonnet && {
-        omcAgentSonnetBg: omcAgentSonnet.bg,
-        omcAgentSonnetFg: omcAgentSonnet.fg,
+      ...(stronkAgentsAgentSonnet && {
+        stronkAgentsAgentSonnetBg: stronkAgentsAgentSonnet.bg,
+        stronkAgentsAgentSonnetFg: stronkAgentsAgentSonnet.fg,
       }),
-      ...(omcAgentHaiku && {
-        omcAgentHaikuBg: omcAgentHaiku.bg,
-        omcAgentHaikuFg: omcAgentHaiku.fg,
+      ...(stronkAgentsAgentHaiku && {
+        stronkAgentsAgentHaikuBg: stronkAgentsAgentHaiku.bg,
+        stronkAgentsAgentHaikuFg: stronkAgentsAgentHaiku.fg,
       }),
       ...(costNormal && {
         costNormalBg: costNormal.bg,

@@ -8,12 +8,12 @@ const MAX_TAIL_BYTES = 512 * 1024;      // 500KB tail limit
 const MAX_AGENT_MAP_SIZE = 50;          // Soft cap (overflow allowed for running agents)
 const STALE_AGENT_THRESHOLD_MS = 30 * 60 * 1000;  // 30 minutes
 
-export interface OmcModeInfo {
+export interface StronkAgentsModeInfo {
   active: boolean;
   mode: 'ultrawork' | 'autopilot' | 'ecomode' | null;
 }
 
-export interface OmcRalphInfo {
+export interface StronkAgentsRalphInfo {
   active: boolean;
   currentIteration: number | null;
   maxIterations: number | null;
@@ -21,7 +21,7 @@ export interface OmcRalphInfo {
 
 export interface ActiveAgent {
   id: string;
-  type: string;           // e.g., "oh-my-claudecode:executor"
+  type: string;           // e.g., "stronk-agents:executor"
   model?: string;         // haiku, sonnet, opus
   description?: string;
   status: 'running' | 'completed';  // Only two states - stale agents get synthetic completion
@@ -29,25 +29,25 @@ export interface ActiveAgent {
   endTime?: Date;
 }
 
-export interface OmcAgentsInfo {
+export interface StronkAgentsAgentsInfo {
   count: number;
   agents: ActiveAgent[];  // Full agent details
   agentType?: string;     // Keep for single-agent backward compatibility
 }
 
-export interface OmcSkillInfo {
+export interface StronkAgentsSkillInfo {
   name: string | null;
   args?: string;
 }
 
-export interface OmcInfo {
-  mode: OmcModeInfo;
-  ralph: OmcRalphInfo;
-  skill: OmcSkillInfo;
-  agents: OmcAgentsInfo;
+export interface StronkAgentsInfo {
+  mode: StronkAgentsModeInfo;
+  ralph: StronkAgentsRalphInfo;
+  skill: StronkAgentsSkillInfo;
+  agents: StronkAgentsAgentsInfo;
 }
 
-export class OmcProvider {
+export class StronkAgentsProvider {
   private async readStateFile<T>(filePath: string): Promise<T | null> {
     try {
       if (!existsSync(filePath)) {
@@ -58,6 +58,10 @@ export class OmcProvider {
     } catch {
       return null;
     }
+  }
+
+  private resolveStateDir(cwd: string): string {
+    return join(cwd, ".stronk-agents", "state");
   }
 
   /**
@@ -140,12 +144,12 @@ export class OmcProvider {
     return ['completed', 'failed', 'error', 'cancelled'].includes(status.toLowerCase());
   }
 
-  private async getModeInfo(cwd: string): Promise<OmcModeInfo> {
-    const omcDir = join(cwd, ".omc");
+  private async getModeInfo(cwd: string): Promise<StronkAgentsModeInfo> {
+    const stateDir = this.resolveStateDir(cwd);
 
     // Check ultrawork
     const ultraworkState = await this.readStateFile<{ active?: boolean }>(
-      join(omcDir, "ultrawork-state.json")
+      join(stateDir, "ultrawork-state.json")
     );
     if (ultraworkState?.active) {
       return { active: true, mode: 'ultrawork' };
@@ -153,7 +157,7 @@ export class OmcProvider {
 
     // Check autopilot
     const autopilotState = await this.readStateFile<{ active?: boolean }>(
-      join(omcDir, "autopilot-state.json")
+      join(stateDir, "autopilot-state.json")
     );
     if (autopilotState?.active) {
       return { active: true, mode: 'autopilot' };
@@ -161,7 +165,7 @@ export class OmcProvider {
 
     // Check ecomode
     const ecomodeState = await this.readStateFile<{ active?: boolean }>(
-      join(omcDir, "ecomode-state.json")
+      join(stateDir, "ecomode-state.json")
     );
     if (ecomodeState?.active) {
       return { active: true, mode: 'ecomode' };
@@ -170,13 +174,13 @@ export class OmcProvider {
     return { active: false, mode: null };
   }
 
-  private async getRalphInfo(cwd: string): Promise<OmcRalphInfo> {
-    const omcDir = join(cwd, ".omc");
+  private async getRalphInfo(cwd: string): Promise<StronkAgentsRalphInfo> {
+    const stateDir = this.resolveStateDir(cwd);
     const ralphState = await this.readStateFile<{
       active?: boolean;
       iteration?: number;
       maxIterations?: number;
-    }>(join(omcDir, "ralph-state.json"));
+    }>(join(stateDir, "ralph-state.json"));
 
     if (!ralphState?.active) {
       return { active: false, currentIteration: null, maxIterations: null };
@@ -195,7 +199,7 @@ export class OmcProvider {
    */
   private async parseTranscriptForSkillAndAgents(
     hookData: ClaudeHookData
-  ): Promise<{ skill: OmcSkillInfo; agents: OmcAgentsInfo }> {
+  ): Promise<{ skill: StronkAgentsSkillInfo; agents: StronkAgentsAgentsInfo }> {
     try {
       if (!hookData.transcript_path || !existsSync(hookData.transcript_path)) {
         return { skill: { name: null }, agents: { count: 0, agents: [] } };
@@ -213,7 +217,7 @@ export class OmcProvider {
       }
       const lines = content.trim().split("\n").filter(l => l.trim());
 
-      let lastSkill: OmcSkillInfo = { name: null };
+      let lastSkill: StronkAgentsSkillInfo = { name: null };
       const agentMap = new Map<string, ActiveAgent>();
       const backgroundAgentMap = new Map<string, string>(); // bgAgentId -> tool_use_id
 
@@ -381,10 +385,10 @@ export class OmcProvider {
     }
   }
 
-  async getOmcInfo(
+  async getStronkAgentsInfo(
     hookData: ClaudeHookData,
     options?: { needsSkill?: boolean; needsAgents?: boolean }
-  ): Promise<OmcInfo> {
+  ): Promise<StronkAgentsInfo> {
     const cwd = hookData.workspace?.project_dir || hookData.cwd || process.cwd();
 
     // Only parse transcript if skill or agents are needed
