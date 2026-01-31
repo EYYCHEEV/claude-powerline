@@ -35,21 +35,21 @@ export interface ColorTheme {
   contextCritical: SegmentColor;
   metrics: SegmentColor;
   version: SegmentColor;
-  omcModeActive: SegmentColor;
-  omcModeInactive: SegmentColor;
-  omcRalphActive: SegmentColor;
-  omcRalphWarn: SegmentColor;
-  omcRalphMax: SegmentColor;
-  omcRalphInactive: SegmentColor;
-  omcAgentsActive: SegmentColor;
-  omcAgentsInactive: SegmentColor;
-  omcSkillActive: SegmentColor;
-  omcSkillInactive: SegmentColor;
-  // Model tier colors for agent display (NEW - optional for backward compat)
-  omcAgentOpus?: SegmentColor;
-  omcAgentSonnet?: SegmentColor;
-  omcAgentHaiku?: SegmentColor;
-  // Cost-based coloring (NEW)
+  stronkAgentsModeActive: SegmentColor;
+  stronkAgentsModeInactive: SegmentColor;
+  stronkAgentsRalphActive: SegmentColor;
+  stronkAgentsRalphWarn: SegmentColor;
+  stronkAgentsRalphMax: SegmentColor;
+  stronkAgentsRalphInactive: SegmentColor;
+  stronkAgentsAgentsActive: SegmentColor;
+  stronkAgentsAgentsInactive: SegmentColor;
+  stronkAgentsSkillActive: SegmentColor;
+  stronkAgentsSkillInactive: SegmentColor;
+  // Model tier colors for agent display (optional)
+  stronkAgentsAgentOpus?: SegmentColor;
+  stronkAgentsAgentSonnet?: SegmentColor;
+  stronkAgentsAgentHaiku?: SegmentColor;
+  // Cost-based coloring (optional)
   costNormal?: SegmentColor;    // Green: cost < $1
   costWarning?: SegmentColor;   // Yellow: $1 <= cost < $5
   costCritical?: SegmentColor;  // Red: cost >= $5
@@ -83,34 +83,34 @@ export interface PowerlineColors {
   metricsFg: string;
   versionBg: string;
   versionFg: string;
-  omcModeActiveBg: string;
-  omcModeActiveFg: string;
-  omcModeInactiveBg: string;
-  omcModeInactiveFg: string;
-  omcRalphActiveBg: string;
-  omcRalphActiveFg: string;
-  omcRalphWarnBg: string;
-  omcRalphWarnFg: string;
-  omcRalphMaxBg: string;
-  omcRalphMaxFg: string;
-  omcRalphInactiveBg: string;
-  omcRalphInactiveFg: string;
-  omcAgentsActiveBg: string;
-  omcAgentsActiveFg: string;
-  omcAgentsInactiveBg: string;
-  omcAgentsInactiveFg: string;
-  omcSkillActiveBg: string;
-  omcSkillActiveFg: string;
-  omcSkillInactiveBg: string;
-  omcSkillInactiveFg: string;
-  // Model tier colors for agent display (NEW - optional for backward compat)
-  omcAgentOpusBg?: string;
-  omcAgentOpusFg?: string;
-  omcAgentSonnetBg?: string;
-  omcAgentSonnetFg?: string;
-  omcAgentHaikuBg?: string;
-  omcAgentHaikuFg?: string;
-  // Cost-based coloring (NEW)
+  stronkAgentsModeActiveBg: string;
+  stronkAgentsModeActiveFg: string;
+  stronkAgentsModeInactiveBg: string;
+  stronkAgentsModeInactiveFg: string;
+  stronkAgentsRalphActiveBg: string;
+  stronkAgentsRalphActiveFg: string;
+  stronkAgentsRalphWarnBg: string;
+  stronkAgentsRalphWarnFg: string;
+  stronkAgentsRalphMaxBg: string;
+  stronkAgentsRalphMaxFg: string;
+  stronkAgentsRalphInactiveBg: string;
+  stronkAgentsRalphInactiveFg: string;
+  stronkAgentsAgentsActiveBg: string;
+  stronkAgentsAgentsActiveFg: string;
+  stronkAgentsAgentsInactiveBg: string;
+  stronkAgentsAgentsInactiveFg: string;
+  stronkAgentsSkillActiveBg: string;
+  stronkAgentsSkillActiveFg: string;
+  stronkAgentsSkillInactiveBg: string;
+  stronkAgentsSkillInactiveFg: string;
+  // Model tier colors for agent display (optional)
+  stronkAgentsAgentOpusBg?: string;
+  stronkAgentsAgentOpusFg?: string;
+  stronkAgentsAgentSonnetBg?: string;
+  stronkAgentsAgentSonnetFg?: string;
+  stronkAgentsAgentHaikuBg?: string;
+  stronkAgentsAgentHaikuFg?: string;
+  // Cost-based coloring (optional)
   costNormalBg?: string;
   costNormalFg?: string;
   costWarningBg?: string;

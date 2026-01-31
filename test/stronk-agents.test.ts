@@ -1,10 +1,10 @@
-import { OmcProvider } from "../src/segments/omc";
+import { StronkAgentsProvider } from "../src/segments/stronk-agents";
 
-describe("OmcProvider", () => {
-  let provider: OmcProvider;
+describe("StronkAgentsProvider", () => {
+  let provider: StronkAgentsProvider;
 
   beforeEach(() => {
-    provider = new OmcProvider();
+    provider = new StronkAgentsProvider();
   });
 
   describe("parseTaskNotification (via integration)", () => {

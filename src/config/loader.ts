@@ -14,10 +14,10 @@ import type {
   BlockSegmentConfig,
   TodaySegmentConfig,
   VersionSegmentConfig,
-  OmcModeSegmentConfig,
-  OmcRalphSegmentConfig,
-  OmcAgentsSegmentConfig,
-  OmcSkillSegmentConfig,
+  StronkAgentsModeSegmentConfig,
+  StronkAgentsRalphSegmentConfig,
+  StronkAgentsAgentsSegmentConfig,
+  StronkAgentsSkillSegmentConfig,
 } from "../segments/renderer";
 
 export interface LineConfig {
@@ -32,10 +32,10 @@ export interface LineConfig {
     context?: ContextSegmentConfig;
     metrics?: MetricsSegmentConfig;
     version?: VersionSegmentConfig;
-    omcMode?: OmcModeSegmentConfig;
-    omcRalph?: OmcRalphSegmentConfig;
-    omcAgents?: OmcAgentsSegmentConfig;
-    omcSkill?: OmcSkillSegmentConfig;
+    stronkAgentsMode?: StronkAgentsModeSegmentConfig;
+    stronkAgentsRalph?: StronkAgentsRalphSegmentConfig;
+    stronkAgentsAgents?: StronkAgentsAgentsSegmentConfig;
+    stronkAgentsSkill?: StronkAgentsSkillSegmentConfig;
   };
 }
 
